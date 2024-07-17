@@ -1,0 +1,111 @@
+.vue-flow__node-default.selected, .vue-flow__node-default.selected:hover, .vue-flow__node-input.selected, .vue-flow__node-input.selected:hover, .vue-flow__node-output.selected, .vue-flow__node-output.selected:hover {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.41) !important;
+}
+
+.default-color-cat-1 {
+  background-color: #f9f1f0 !important;
+  border: 1px solid #f79489 !important;
+  color: black !important;
+}
+
+.environment-color-cat-1 {
+  background-color: #ddffe7 !important;
+  border: 1px solid #29a0b1 !important;
+  color: black !important;
+}
+
+.environment-color-cat-2 {
+  background-color: #98d7c2 !important;
+  border: 1px solid #29a0b1 !important;
+  color: black !important;
+}
+
+.equipments-color-cat-1 {
+  background-color: #ffdec5 !important;
+  border: 1px solid #f0a160 !important;
+  color: black !important;
+}
+
+.equipments-color-cat-2 {
+  background-color: #e4b7a0 !important;
+  border: 1px solid #f0a160 !important;
+  color: black !important;
+}
+
+.multimedia-color-cat-1 {
+  background-color: #f3c7f1 !important;
+  border: 1px solid #A16AE8 !important;
+  color: black !important;
+}
+
+.multimedia-color-cat-2 {
+  background-color: #d4c9fe !important;
+  border: 1px solid #A16AE8 !important;
+  color: black !important;
+}
+
+.multimedia-color-cat-3 {
+  background-color: #c8f4f9 !important;
+  border: 1px solid #3cacae !important;
+  color: black !important;
+}
+
+.three-d-models-color-cat-1 {
+  background-color: #ffdadd !important;
+  border: 1px solid #f0525f !important;
+  color: black !important;
+}
+
+.three-d-models-color-cat-2 {
+  background-color: #ffbec3 !important;
+  border: 1px solid #f0525f !important;
+  color: black !important;
+}
+
+.three-d-geometries-color-cat-1 {
+  background-color: #fae9b5 !important;
+  border: 1px solid #e4b731 !important;
+  color: black !important;
+}
+
+.three-d-geometries-color-cat-2 {
+  background-color: #fde290 !important;
+  border: 1px solid #e4b731 !important;
+  color: black !important;
+}
+
+.two-d-geometries-color-cat-1 {
+  background-color: #d8f3bd !important;
+  border: 1px solid #8ec245 !important;
+  color: black !important;
+}
+
+.functions-color-cat-1 {
+  background: linear-gradient(to left, #fefabd, #ffe3c7) !important;
+  border: 1px solid #f29e66 !important;
+  color: black !important;
+}
+
+.functions-color-cat-2 {
+  background-color: #fed3ff !important;
+  border: 1px solid #dd00ff !important;
+  color: black !important;
+}
+
+.properties-color-cat-1 {
+  background-color: #fff5d7 !important;
+  border: 1px solid #b6851b !important;
+  color: black !important;
+}
+
+.interactions-color-cat-1 {
+  background-color: #c9fbf0d6 !important;
+  border: 1px solid #03ff1c !important;
+  color: black !important;
+}
+
+.gui-components-color-cat-1 {
+  background-color: #d1ffc9 !important;
+  border: 1px solid #1DB700 !important;
+  color: black !important;
+}

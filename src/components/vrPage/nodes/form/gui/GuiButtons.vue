@@ -1,0 +1,523 @@
+<script setup>
+import { defineEmits, defineProps, ref, watch, onMounted, onBeforeUnmount } from "vue";
+
+const props = defineProps({
+  opened: Boolean,
+  focusedNodeData: Object,
+  formLabel: String,
+  guiButtonType: String,
+});
+
+const emits = defineEmits(["formSubmitted"]);
+
+var receivedFocusedNodeData = props.focusedNodeData;
+var receivedFormLabel = props.formLabel;
+var receivedGuiButtonType = props.guiButtonType;
+
+const isModalOpen = ref(props.opened);
+
+function closeModal() {
+  isModalOpen.value = false;
+}
+
+function saveModal() {
+  //receivedFocusedNodeData.properties.id = receivedFocusedNodeData.id
+  emits("formSubmitted");
+  closeModal();
+}
+
+watch(
+  () => props.guiButtonType,
+  (newType) => {
+    if ('others' !== props.guiButtonType) {
+      receivedFocusedNodeData.type = props.guiButtonType;
+    }
+  },
+  { immediate: true } // This makes sure the watch is executed immediately with the current value
+);
+
+const sidebarRef = ref(null);
+
+function handleClickOutside(event) {
+  if (sidebarRef.value && !sidebarRef.value.contains(event.target)) {
+    closeModal();
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+</script>
+
+<template>
+  <aside ref="sidebarRef" class="sidebar_container common-css-div" :class="isModalOpen && 'active'">
+    <div class="form-content">
+      <h1 class="form-heading">
+        {{ receivedFormLabel.toString().split(":")[1] }}
+      </h1>
+      <div class="btn-bar d-flex justify-content-between">
+        <div></div>
+        <div>
+          <button type="button" class="btn btn-secondary flex-grow-1" @click="closeModal" style="margin-right: 5px">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary save-changes-btn" @click="saveModal">
+            Save
+          </button>
+        </div>
+      </div>
+      <h4 class="heading-tags">Properties</h4>
+      <!-- START: Object Type form  -->
+      <div class="modal-body d-flex flex-column mt-5">
+
+        <div class="row">
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-2" for="type">Select</label>
+              <select class="col-md-6 select" id="type" v-model="receivedFocusedNodeData.type">
+                <option value="gui-button">Button</option>
+                <option value="gui-toggle-button">Toggle Button</option>
+              </select>
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-2" for="node-name">Node_Name</label>
+              <input type="text" class="col-md-1" id="node-name" v-model="receivedFocusedNodeData.properties.name" />
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row" v-if="receivedFocusedNodeData.type === 'gui-button'">
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="color">Color</label>
+              <input type="color" class="col-md-1" id="color" v-model="receivedFocusedNodeData.properties.color" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="textColor">Text Color</label>
+              <input type="color" class="col-md-1" id="textColor"
+                v-model="receivedFocusedNodeData.properties.textColor" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="borderColor">border Color</label>
+              <input type="color" class="col-md-1" id="borderColor"
+                v-model="receivedFocusedNodeData.properties.borderColor" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="width">Width</label>
+              <input type="text" class="col-md-1" id="width" v-model="receivedFocusedNodeData.properties.width" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="position">Position</label>
+              <input type="text" class="col-md-1" id="position" v-model="receivedFocusedNodeData.properties.position" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="height">height</label>
+              <input type="text" class="col-md-1" id="height" v-model="receivedFocusedNodeData.properties.height" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-2" for="text">Text</label>
+              <input type="text" class="col-md-1" id="text" v-model="receivedFocusedNodeData.properties.text" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="eventName">Event Name</label>
+              <select class="col-md-6 select" id="eventName" v-model="receivedFocusedNodeData.properties.eventName">
+                <option value="color-change-event">Color Change</option>
+                <option value="scale-change-event">Scale Change</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-2" for="src">Texture</label>
+              <input type="text" class="col-md-1" id="src" v-model="receivedFocusedNodeData.properties.src" />
+            </div>
+            <div class="input-row-col-2">
+            </div>
+          </div>
+        </div>
+
+        <div class="row" v-if="receivedFocusedNodeData.type === 'gui-toggle-button'">
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="height">height</label>
+              <input type="text" class="col-md-1" id="height" v-model="receivedFocusedNodeData.properties.height" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="width">Width</label>
+              <input type="text" class="col-md-1" id="width" v-model="receivedFocusedNodeData.properties.width" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="depth">Depth</label>
+              <input type="text" class="col-md-1" id="depth" v-model="receivedFocusedNodeData.properties.depth" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="textColor">Text Color</label>
+              <input type="color" class="col-md-1" id="textColor"
+                v-model="receivedFocusedNodeData.properties.textColor" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="colorOn">On Color</label>
+              <input type="color" class="col-md-1" id="colorOn" v-model="receivedFocusedNodeData.properties.colorOn" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="colorOff">Off Color</label>
+              <input type="color" class="col-md-1" id="colorOff"
+                v-model="receivedFocusedNodeData.properties.colorOff" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="handleColor">Handle Color</label>
+              <input type="color" class="col-md-1" id="handleColor"
+                v-model="receivedFocusedNodeData.properties.handleColor" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="position">Position</label>
+              <input type="text" class="col-md-1" id="position" v-model="receivedFocusedNodeData.properties.position" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="textPosition">Text Position</label>
+              <input type="text" class="col-md-1" id="textPosition"
+                v-model="receivedFocusedNodeData.properties.textPosition" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-2" for="rotation">Rotation</label>
+              <input type="text" class="col-md-1" id="rotation" v-model="receivedFocusedNodeData.properties.rotation" />
+              <!-- <label class="col-md-6" for="borderRadius">Border Radius</label>
+              <input type="text" class="col-md-1" id="borderRadius" v-model="receivedFocusedNodeData.properties.borderRadius" /> -->
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="eventName">Event Name</label>
+              <select class="col-md-6 select" id="eventName" v-model="receivedFocusedNodeData.properties.eventName">
+                <option value="color-change-event">Color Change</option>
+                <option value="scale-change-event">Scale Change</option>
+              </select>
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-2" for="src">Texture</label>
+              <input type="text" class="col-md-1" id="src" v-model="receivedFocusedNodeData.properties.src" />
+              <!-- <label class="col-md-6" for="onClick">OnClick Function</label>
+              <input type="text" class="col-md-1" id="onClick" v-model="receivedFocusedNodeData.properties.onClick" /> -->
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <!-- <div class="row">
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="type">Select&nbsp</label>
+              <select class="col-md-6 select" id="type" v-model="receivedFocusedNodeData.type">
+                <option value="start">Start</option>
+                <option value="stop">Stop</option>
+                <option value="rotate">Rotate</option>
+              </select>
+            </div>
+            <div class="input-row-col-2">
+            </div>
+          </div>
+        </div>
+
+        <div class="row" v-if="receivedFocusedNodeData.type === 'start'">
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="position">Position</label>
+              <input type="text" class="col-md-1" id="position" v-model="receivedFocusedNodeData.properties.position" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="height">Height</label>
+              <input type="text" class="col-md-1" id="height" v-model="receivedFocusedNodeData.properties.height" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="width">Width</label>
+              <input type="text" class="col-md-1" id="width" v-model="receivedFocusedNodeData.properties.width" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="color">Color</label>
+              <input type="color" class="col-md-1" id="color" v-model="receivedFocusedNodeData.properties.color" />
+              <input type="text" class="col-md-1" id="src" v-model="receivedFocusedNodeData.properties.src" readonly
+                style="visibility: hidden" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row" v-if="receivedFocusedNodeData.type === 'stop'">
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="position">Position</label>
+              <input type="text" class="col-md-1" id="position" v-model="receivedFocusedNodeData.properties.position" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="height">Height</label>
+              <input type="text" class="col-md-1" id="height" v-model="receivedFocusedNodeData.properties.height" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="width">Width</label>
+              <input type="text" class="col-md-1" id="width" v-model="receivedFocusedNodeData.properties.width" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="color">Color</label>
+              <input type="color" class="col-md-1" id="color" v-model="receivedFocusedNodeData.properties.color" />
+              <input type="text" class="col-md-1" id="src" v-model="receivedFocusedNodeData.properties.src" readonly
+                style="visibility: hidden" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row" v-if="receivedFocusedNodeData.type === 'rotate'">
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="position">Position</label>
+              <input type="text" class="col-md-1" id="position" v-model="receivedFocusedNodeData.properties.position" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="height">Height</label>
+              <input type="text" class="col-md-1" id="height" v-model="receivedFocusedNodeData.properties.height" />
+            </div>
+          </div>
+          <div class="input-row gap-2 d-flex justify-content-between">
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="width">Width</label>
+              <input type="text" class="col-md-1" id="width" v-model="receivedFocusedNodeData.properties.width" />
+            </div>
+            <div class="input-row-col-2">
+              <label class="col-md-6" for="color">Color</label>
+              <input type="color" class="col-md-1" id="color" v-model="receivedFocusedNodeData.properties.color" />
+              <input type="text" class="col-md-1" id="src" v-model="receivedFocusedNodeData.properties.src" readonly
+                style="visibility: hidden" />
+            </div>
+          </div>
+
+        </div> -->
+      </div>
+      <!-- END: Object Type form  -->
+    </div>
+  </aside>
+</template>
+
+<style>
+/* Hide the default file input */
+input[type="file"] {
+  display: none;
+}
+</style>
+
+<style scoped>
+.btns-div {
+  padding: 0px 50px;
+}
+
+.btn-div button {
+  width: 100% !important;
+}
+
+.btn-action {
+  padding: 7px;
+  transform: translateY(0.5px);
+  color: aliceblue;
+  width: 30px;
+  height: 30px;
+}
+
+.btn-primary-cus {
+  color: #006170;
+  background-color: #00617053;
+  border-color: #004c58;
+  margin-top: 17.5px;
+}
+
+.btn-primary-cus:hover {
+  color: #ffffff;
+  background-color: #006170;
+  border-color: #004c58;
+}
+
+.btn-danger-cus {
+  color: #990000;
+  background-color: #dd222256;
+  border-color: #661111;
+  margin-top: 17.5px;
+}
+
+.btn-danger-cus:hover {
+  background-color: #dd2222;
+  color: #ffffff;
+}
+
+.btn-view-cus {
+  color: #006170 !important;
+  background-color: #3d363600 !important;
+  border-color: #004c58 !important;
+}
+
+.btn-view-cus:hover {
+  background-color: #f2ac5b65 !important;
+  color: #006170 !important;
+  border-color: #006170 !important;
+}
+</style>
+
+<style scoped>
+::-ms-input-placeholder {
+  font-size: 13px;
+}
+
+::placeholder {
+  font-size: 13px;
+}
+
+.modal-body {
+  margin-top: -10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
+  min-height: 100%;
+}
+
+.form-content {
+  position: relative;
+  height: 80% !important;
+}
+
+.modal-footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.row {
+  height: 100%;
+}
+
+.sidebar_container {
+  position: fixed;
+  top: 75px;
+  right: 0;
+  bottom: 19px;
+  transform: translateX(300px);
+  background-color: #ffffff;
+  color: white;
+  width: 500px;
+  visibility: hidden;
+  opacity: 0;
+  transition: transform 0.3s, opacity 0.3s, visibility 0s 0.3s;
+  z-index: 10;
+  border-left: #f1f3f4 5px solid;
+  border-top: #f1f3f4 5px solid;
+  border-bottom: #f1f3f4 5px solid;
+  padding-bottom: 50px;
+  border-radius: 5px 0 0 5px;
+}
+
+.sidebar_container.active {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+  transition: visibility;
+  transition: transform 0.3s, opacity 0.3s, visibility 0s 0.3s;
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #080a0c22;
+  padding: 0px;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  border: 1px solid #080a0c00;
+  padding: 0px;
+  border-radius: 4px;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: 1px solid #080a0c00;
+  padding: 0px;
+  border-radius: 4px;
+}
+
+.input-row {
+  padding: 0 20px 15px 20px !important;
+}
+
+.input-row-col-2 {
+  width: 50% !important;
+}
+
+input,
+select {
+  color: black;
+  /* padding: 5px 10px !important; */
+  width: initial !important;
+  width: -webkit-fill-available !important;
+  border-radius: 5px !important;
+  margin: 0 !important;
+  border: #000 1px solid;
+}
+
+.select-own {
+  /* margin: 0 10px 15px 20px !important; */
+  width: 398px !important;
+}
+
+.btn-bar {
+  padding: 5px 15px 5px 20px !important;
+  border-top: #f1f3f4 2px solid;
+  border-bottom: #f1f3f4 2px solid;
+}
+
+label {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: black !important;
+}
+
+.modal-footer {
+  margin: 50px 20px 0 0px !important;
+}
+
+.form-heading {
+  margin-left: 12px;
+  margin-top: 20px;
+  color: black !important;
+  font-size: 22px;
+}
+
+.heading-tags {
+  text-align: left;
+  margin-left: 12px;
+  margin-top: 25px !important;
+  margin-bottom: 20px !important;
+}
+
+h4 {
+  margin-top: 50px;
+  color: black !important;
+}
+</style>
